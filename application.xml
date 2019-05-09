@@ -25,7 +25,7 @@
     </device>
 
     <device name="Part2Output" type="Digital Output">
-            <setting id="pin" name="Input" value="8"/>
+            <setting id="pin" name="Input" value="2"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="false"/>
     </device>

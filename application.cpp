@@ -13,7 +13,7 @@
 #include "http-get-server.hpp"
 
 static HTTPGetServer s_server(true);
-static raat_devices_struct * s_pDevices = NULL;
+static const raat_devices_struct * s_pDevices = NULL;
 
 static void send_standard_erm_response()
 {
@@ -24,14 +24,14 @@ static void send_standard_erm_response()
 
 static void get_part1(char const * const url) {
     (void)url;
-    s_server.add_body_P(s_pDevices->pPart1Input->state() ? PSTR("COMPLETE") : PSTR("NOT COMPLETE"));
     send_standard_erm_response();
+    s_server.add_body_P(s_pDevices->pPart1Input->state() ? PSTR("COMPLETE\r\n\r\n") : PSTR("NOT COMPLETE\r\n\r\n"));
 }
 
 static void get_part2(char const * const url) {
     (void)url;
-    s_server.add_body_P(s_pDevices->pPart2Input->state() ? PSTR("COMPLETE") : PSTR("NOT COMPLETE"));
     send_standard_erm_response();
+    s_server.add_body_P(s_pDevices->pPart2Input->state() ? PSTR("COMPLETE\r\n\r\n") : PSTR("NOT COMPLETE\r\n\r\n"));
 }
 
 
@@ -39,12 +39,14 @@ static void trigger_part1(char const * const url) {
     (void)url;
     s_pDevices->pPart1Output->set(true);
     send_standard_erm_response();
+    s_server.add_body_P(PSTR("OK\r\n\r\n"));
 }
 
 static void trigger_part2(char const * const url) {
     (void)url;
     s_pDevices->pPart2Output->set(true);
     send_standard_erm_response();
+    s_server.add_body_P(PSTR("OK\r\n\r\n"));
 }
 
 
@@ -52,12 +54,14 @@ static void reset_part1(char const * const url) {
     (void)url;
     s_pDevices->pPart1Output->set(false);
     send_standard_erm_response();
+    s_server.add_body_P(PSTR("OK\r\n\r\n"));
 }
 
 static void reset_part2(char const * const url) {
     (void)url;
     s_pDevices->pPart2Output->set(false);
     send_standard_erm_response();
+    s_server.add_body_P(PSTR("OK\r\n\r\n"));
 }
 
 static const char PART1_GET_URL[] PROGMEM = "/part1/status";
@@ -88,6 +92,18 @@ char * ethernet_response_provider()
     return s_server.get_response();
 }
 
+static void status_task_fn(RAATTask& task, void * pTaskData)
+{
+    (void)task; (void)pTaskData;
+    Serial.print("Part 1: ");
+    Serial.print(s_pDevices->pPart1Input->state() ? "1" : "0");
+    Serial.println(s_pDevices->pPart1Output->state() ? ",OVR" : "");
+    Serial.print("Part 2: ");
+    Serial.print(s_pDevices->pPart2Input->state() ? "1" : "0");
+    Serial.println(s_pDevices->pPart2Output->state() ? ",OVR" : "");
+}
+static RAATTask s_status_task(1000, status_task_fn);
+
 void raat_custom_setup(const raat_devices_struct& devices, const raat_params_struct& params)
 {
     (void)params;
@@ -98,4 +114,5 @@ void raat_custom_setup(const raat_devices_struct& devices, const raat_params_str
 void raat_custom_loop(const raat_devices_struct& devices, const raat_params_struct& params)
 {
     (void)devices; (void)params;
+    s_status_task.run();
 }
