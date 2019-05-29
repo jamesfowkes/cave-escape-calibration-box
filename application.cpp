@@ -95,12 +95,15 @@ char * ethernet_response_provider()
 static void status_task_fn(RAATTask& task, void * pTaskData)
 {
     (void)task; (void)pTaskData;
-    Serial.print("Part 1: ");
-    Serial.print(s_pDevices->pPart1Input->state() ? "1" : "0");
-    Serial.println(s_pDevices->pPart1Output->state() ? ",OVR" : "");
-    Serial.print("Part 2: ");
-    Serial.print(s_pDevices->pPart2Input->state() ? "1" : "0");
-    Serial.println(s_pDevices->pPart2Output->state() ? ",OVR" : "");
+    raat_logln_P(LOG_APP, PSTR("Part 1: %S%S"),
+        s_pDevices->pPart1Input->state() ? PSTR("1") : PSTR("0"),
+        s_pDevices->pPart1Output->state() ? PSTR(",OVR") : PSTR("")
+    );
+
+    raat_logln_P(LOG_APP, PSTR("Part 2: %S%S"),
+        s_pDevices->pPart2Input->state() ? PSTR("1") : PSTR("0"),
+        s_pDevices->pPart2Output->state() ? PSTR(",OVR") : PSTR("")
+    );
 }
 static RAATTask s_status_task(1000, status_task_fn);
 

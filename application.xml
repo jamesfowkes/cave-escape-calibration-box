@@ -4,28 +4,29 @@
 
 <devices>
     <device name="Ethernet" type="ENC28J60">
+        <setting id="cs_pin" value="10"></setting>
     </device>
 
     <device name="Part1Input" type="Debounced Input">
-            <setting id="pin" name="Input" value="5"/>
+            <setting id="pin" name="Input" value="4"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="false"/>
     </device>
 
     <device name="Part1Output" type="Digital Output">
-            <setting id="pin" name="Input" value="6"/>
+            <setting id="pin" name="Input" value="5"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="false"/>
     </device>
 
     <device name="Part2Input" type="Debounced Input">
-            <setting id="pin" name="Input" value="7"/>
+            <setting id="pin" name="Input" value="6"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="false"/>
     </device>
 
     <device name="Part2Output" type="Digital Output">
-            <setting id="pin" name="Input" value="2"/>
+            <setting id="pin" name="Input" value="7"/>
             <setting id="debounce_time" value="50"/>
             <setting id="pullup" value="false"/>
     </device>
